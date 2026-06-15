@@ -1,0 +1,52 @@
+# LocalStack configuration
+# Use with tflocal (pip install terraform-local):
+#   cd terraform
+#   tflocal init
+#   tflocal apply -var-file=terraform.tfvars.localstack
+
+region       = "us-east-1"
+environment  = "local"
+project_name = "mtkc"
+
+vpc_cidr           = "10.0.0.0/16"
+az_count           = 2
+enable_nat_gateway = false
+
+kubernetes_version     = "1.29"
+eks_node_count         = 1
+eks_node_instance_type = "t3.medium"
+
+# Single node pool for local dev
+enable_user_node_pool   = false
+user_node_count         = 1
+user_node_instance_type = "t3.medium"
+
+enable_eks_autoscaling = false
+system_node_min_count  = 1
+system_node_max_count  = 1
+user_node_min_count    = 1
+user_node_max_count    = 1
+
+enable_logging = false
+
+argocd_version      = "5.51.6"
+argocd_service_type = "ClusterIP"
+
+# HTTP-only — no ACM cert required for local dev
+# The ALB HTTP listener forwards directly to the Istio Gateway (port 80)
+# HTTPS listener on the Gateway still works if you run 01-generate-certs.sh and create the secret
+enable_https          = false
+acm_certificate_arn   = ""
+backend_https_enabled = false
+
+enable_api_gateway          = false
+api_gateway_custom_domain   = ""
+api_gateway_certificate_arn = ""
+enable_api_gateway_logging  = false
+
+tags = {
+  Project     = "MTKC-POC"
+  Purpose     = "Gateway-API-EKS-Integration"
+  ManagedBy   = "Terraform"
+  Environment = "LocalStack"
+}

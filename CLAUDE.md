@@ -130,6 +130,36 @@ terraform/modules/
 └── api-gateway/   — AWS API Gateway (optional, separate ingress path)
 ```
 
+## LocalStack (Local Development)
+
+**Requirements:** LocalStack Pro (`LOCALSTACK_AUTH_TOKEN` set), `tflocal` (`pip install terraform-local`), `awslocal` (`pip install awscli-local`).
+
+```bash
+# One-shot deployment
+LOCALSTACK_AUTH_TOKEN=<token> ./scripts/localstack-deploy.sh
+```
+
+The script runs `tflocal apply -var-file=terraform.tfvars.localstack`, configures kubectl via `awslocal eks update-kubeconfig`, deploys the ArgoCD app-of-apps, and registers the NLB with the ALB target group.
+
+**Key differences from real AWS (`terraform/terraform.tfvars.localstack`):**
+- `region = "us-east-1"` — LocalStack default
+- `enable_nat_gateway = false` — not needed locally
+- `enable_https = false`, `backend_https_enabled = false` — HTTP only; no ACM cert required
+- `argocd_service_type = "ClusterIP"` — access via port-forward
+- Single node pool, 1 node
+
+**Access without ALB:**
+```bash
+kubectl port-forward -n istio-ingress svc/istio-gateway 9080:80
+curl http://localhost:9080/healthz/ready
+```
+
+**Teardown:**
+```bash
+kubectl delete -f argocd/root-app.yaml
+cd terraform && tflocal destroy -var-file=terraform.tfvars.localstack
+```
+
 ## NLB–ALB Integration
 
 The Gateway resource creates an Internal NLB via AWS LB Controller annotations. The NLB is not directly internet-facing — its private IPs must be registered as targets in the ALB's target group. `scripts/06-register-nlb-with-alb.sh` automates this: it resolves NLB hostname → IPs via `dig`, registers them, and deregisters stale targets. Re-run this script whenever the Gateway is recreated (NLB IPs can change).

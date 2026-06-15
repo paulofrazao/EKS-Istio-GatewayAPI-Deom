@@ -54,17 +54,17 @@ output "lb_controller_role_arn" {
 # ALB Outputs
 output "alb_name" {
   description = "Application Load Balancer name"
-  value       = module.alb.alb_name
+  value       = try(module.alb[0].alb_name, null)
 }
 
 output "alb_dns_name" {
   description = "Application Load Balancer DNS name"
-  value       = module.alb.alb_dns_name
+  value       = try(module.alb[0].alb_dns_name, null)
 }
 
 output "alb_target_group_arn" {
   description = "ALB target group ARN (for backend pool update)"
-  value       = var.backend_https_enabled ? module.alb.target_group_https_arn : module.alb.target_group_http_arn
+  value       = var.create_alb ? (var.backend_https_enabled ? try(module.alb[0].target_group_https_arn, null) : try(module.alb[0].target_group_http_arn, null)) : null
 }
 
 # ArgoCD Outputs
@@ -93,20 +93,20 @@ output "argocd_url" {
 
 output "app_urls_https" {
   description = "HTTPS URLs for applications"
-  value = var.enable_https ? {
-    health = "https://${module.alb.alb_dns_name}/healthz/ready"
-    app1   = "https://${module.alb.alb_dns_name}/app1"
-    app2   = "https://${module.alb.alb_dns_name}/app2"
+  value = (var.enable_https && var.create_alb) ? {
+    health = "https://${module.alb[0].alb_dns_name}/healthz/ready"
+    app1   = "https://${module.alb[0].alb_dns_name}/app1"
+    app2   = "https://${module.alb[0].alb_dns_name}/app2"
   } : null
 }
 
 output "app_urls_http" {
   description = "HTTP URLs for applications (redirects to HTTPS when enabled)"
-  value = {
-    health = "http://${module.alb.alb_dns_name}/healthz/ready"
-    app1   = "http://${module.alb.alb_dns_name}/app1"
-    app2   = "http://${module.alb.alb_dns_name}/app2"
-  }
+  value = var.create_alb ? {
+    health = "http://${module.alb[0].alb_dns_name}/healthz/ready"
+    app1   = "http://${module.alb[0].alb_dns_name}/app1"
+    app2   = "http://${module.alb[0].alb_dns_name}/app2"
+  } : null
 }
 
 output "https_enabled" {

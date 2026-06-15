@@ -148,6 +148,12 @@ variable "argocd_service_type" {
 }
 
 # AWS API Gateway Configuration (equivalent to Azure APIM)
+variable "create_alb" {
+  description = "Create the Application Load Balancer (disable for LocalStack where ELBv2 read-back fails)"
+  type        = bool
+  default     = true
+}
+
 variable "enable_api_gateway" {
   description = "Enable AWS API Gateway for API traffic (equivalent to Azure APIM)"
   type        = bool

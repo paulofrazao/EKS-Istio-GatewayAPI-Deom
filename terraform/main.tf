@@ -105,6 +105,7 @@ module "iam_lb_controller" {
 
 # Application Load Balancer - External entry point
 module "alb" {
+  count  = var.create_alb ? 1 : 0
   source = "./modules/alb"
 
   name_prefix       = local.name_prefix

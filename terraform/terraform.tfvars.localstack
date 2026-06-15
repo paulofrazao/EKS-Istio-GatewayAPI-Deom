@@ -32,6 +32,10 @@ enable_logging = false
 argocd_version      = "5.51.6"
 argocd_service_type = "ClusterIP"
 
+# LocalStack ELBv2 rejects ALB ARNs on DescribeLoadBalancers read-back; skip ALB
+# Access via: kubectl port-forward -n istio-ingress svc/istio-gateway 9080:80
+create_alb = false
+
 # HTTP-only — no ACM cert required for local dev
 # The ALB HTTP listener forwards directly to the Istio Gateway (port 80)
 # HTTPS listener on the Gateway still works if you run 01-generate-certs.sh and create the secret

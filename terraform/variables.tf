@@ -43,7 +43,7 @@ variable "enable_nat_gateway" {
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.34"
+  default     = "1.35"
 }
 
 variable "eks_node_count" {

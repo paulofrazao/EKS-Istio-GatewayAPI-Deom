@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push *)",
+      "Bash(git remote *)",
+      "Bash(gh auth *)",
+      "Bash(git config *)",
+      "Bash(git commit *)",
+      "Bash(chmod +x *)"
+    ]
+  }
+}

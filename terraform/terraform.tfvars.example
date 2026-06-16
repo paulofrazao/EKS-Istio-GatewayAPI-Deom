@@ -1,7 +1,13 @@
 # MTKC POC EKS - Example Terraform Variables
 # @author Shanaka Jayasundera - shanakaj@gmail.com
 #
-# Copy this file to terraform.tfvars and customize as needed
+# Copy this file to terraform.tfvars and customize as needed.
+#
+# Remote state setup (run once before terraform apply):
+#   ./scripts/setup-backend.sh [project_name] [environment] [region]
+# The script creates the S3 bucket + DynamoDB lock table and re-initialises
+# the workspace.  Pass the same project_name/environment/region values you
+# set below so the bucket name is consistent.
 
 # AWS Region
 region = "ap-southeast-2"
@@ -16,7 +22,7 @@ az_count           = 2
 enable_nat_gateway = true
 
 # EKS Configuration
-kubernetes_version     = "1.34"
+kubernetes_version     = "1.35"
 eks_node_count         = 2
 eks_node_instance_type = "t3.medium"
 

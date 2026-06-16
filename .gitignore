@@ -6,6 +6,11 @@
 !terraform.tfvars.example
 .terraform.lock.hcl
 
+# Bootstrap workspace keeps local state (bucket stores main workspace state)
+terraform/bootstrap/.terraform/
+terraform/bootstrap/terraform.tfstate
+terraform/bootstrap/terraform.tfstate.backup
+
 # Certificates (sensitive)
 certs/*.pem
 certs/*.crt

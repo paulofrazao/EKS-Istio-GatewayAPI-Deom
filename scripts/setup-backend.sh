@@ -10,7 +10,7 @@ sleep 4  # Pause for 3 seconds
 
 # Second command - show current directory contents
 echo "Create S3 bucket for store Terraform state"
-aws --endpoint-url http://localhost:4566 --region us-east-1 s3 mb s3://aws_s3_bucket
+aws --endpoint-url http://localhost:4566 --region us-east-1 s3 mb s3://tf-test-state
 sleep 3  # Pause for 2 seconds
 
 

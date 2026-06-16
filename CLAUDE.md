@@ -35,34 +35,39 @@ aws sts get-caller-identity   # verify AWS credentials
 ### Full Deployment Sequence
 
 ```bash
-# 1. Provision infrastructure
+# 1. Bootstrap S3 remote state backend (run once per environment)
+# Creates the S3 bucket + DynamoDB lock table, then re-inits the workspace.
+./scripts/setup-backend.sh   # defaults: project=mtkc, env=poc, region=ap-southeast-2
+# Pass explicit values if your terraform.tfvars differs:
+# ./scripts/setup-backend.sh <project_name> <environment> <region>
+
+# 2. Provision infrastructure
 cd terraform
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars — set acm_certificate_arn (required for HTTPS)
-terraform init
 terraform apply
 
-# 2. Configure kubectl
+# 3. Configure kubectl
 $(terraform output -raw eks_get_credentials_command)
 
-# 3. Generate self-signed backend TLS certs
+# 4. Generate self-signed backend TLS certs
 ./scripts/01-generate-certs.sh           # outputs to certs/ (gitignored)
 
-# 4. Bootstrap TLS secret before ArgoCD deploys Gateway
+# 5. Bootstrap TLS secret before ArgoCD deploys Gateway
 kubectl create namespace istio-ingress
 kubectl create secret tls istio-gateway-tls \
   --cert=certs/server.crt \
   --key=certs/server.key \
   -n istio-ingress
 
-# 5. Deploy ArgoCD app-of-apps
+# 6. Deploy ArgoCD app-of-apps
 kubectl apply -f argocd/root-app.yaml
 kubectl get applications -n argocd -w    # wait for all apps to sync
 
-# 6. Register NLB IPs with ALB target group (run after Gateway is Ready)
+# 7. Register NLB IPs with ALB target group (run after Gateway is Ready)
 ./scripts/06-register-nlb-with-alb.sh
 
-# 7. Validate
+# 8. Validate
 ./scripts/04-validate.sh
 ALB_DNS=$(terraform -chdir=terraform output -raw alb_dns_name)
 curl -k https://${ALB_DNS}/healthz/ready
@@ -73,12 +78,13 @@ curl -k https://${ALB_DNS}/app2
 ### Individual Script Usage
 
 ```bash
-./scripts/01-generate-certs.sh [domain]   # default domain: mtkc-poc.local
-./scripts/02-deploy-istio.sh              # Istio + AWS LB Controller via Helm
-./scripts/03-deploy-apps.sh              # k8s manifests only
-./scripts/04-validate.sh                  # 10-point health check
-./scripts/05-deploy-argocd.sh            # ArgoCD Helm install only
-./scripts/06-register-nlb-with-alb.sh   # NLB→ALB IP registration
+./scripts/setup-backend.sh [project] [env] [region]  # S3 backend bootstrap (run once)
+./scripts/01-generate-certs.sh [domain]              # default domain: mtkc-poc.local
+./scripts/02-deploy-istio.sh                         # Istio + AWS LB Controller via Helm
+./scripts/03-deploy-apps.sh                          # k8s manifests only
+./scripts/04-validate.sh                             # 10-point health check
+./scripts/05-deploy-argocd.sh                        # ArgoCD Helm install only
+./scripts/06-register-nlb-with-alb.sh               # NLB→ALB IP registration
 ```
 
 ### ArgoCD Access

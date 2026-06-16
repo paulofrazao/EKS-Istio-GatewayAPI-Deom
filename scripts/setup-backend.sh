@@ -1,54 +1,28 @@
-#!/usr/bin/env bash
-# Bootstrap the Terraform S3 backend then (re-)initialise the main workspace.
-#
-# Run this once before the first `terraform apply`, or whenever you need to
-# point a fresh clone at the existing remote state.
-#
-# Usage:
-#   ./scripts/setup-backend.sh [project_name] [environment] [region]
-#
-# Defaults match terraform.tfvars.example values.
+#!/bin/bash
 
-set -euo pipefail
+# Print a starting message
+echo "Starting script execution..."
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-BOOTSTRAP_DIR="${REPO_ROOT}/terraform/bootstrap"
-TERRAFORM_DIR="${REPO_ROOT}/terraform"
+# First command - show current working directory
+echo "Start LocalStack:"
+localstack start -d
+sleep 4  # Pause for 3 seconds
 
-PROJECT_NAME="${1:-mtkc}"
-ENVIRONMENT="${2:-poc}"
-REGION="${3:-us-east-1}"
+# Second command - show current directory contents
+echo "Create S3 bucket for store Terraform state"
+aws --endpoint-url http://localhost:4566 --region us-east-1 s3 mb s3://aws_s3_bucket
+sleep 3  # Pause for 2 seconds
 
-echo "==> Verifying AWS credentials..."
-aws sts get-caller-identity --output text --query 'Account' > /dev/null
 
-echo "==> Bootstrapping state bucket (bootstrap workspace has local state)..."
-cd "${BOOTSTRAP_DIR}"
-terraform init -input=false
-terraform apply -input=false -auto-approve \
-  -var="project_name=${PROJECT_NAME}" \
-  -var="environment=${ENVIRONMENT}" \
-  -var="region=${REGION}"
+# Third command - display system information
+echo "Terraform init:"
+#tflocal init
+sleep 2  # Pause for 2 seconds
 
-BUCKET=$(terraform output -raw bucket_name)
-TABLE=$(terraform output -raw dynamodb_table)
-echo ""
-echo "  Bucket : ${BUCKET}"
-echo "  Table  : ${TABLE}"
-echo "  Region : ${REGION}"
+# Third command - display system information
+echo "Terraform apply:"
+tflocal apply --auto-approve
 
-echo ""
-echo "==> Initialising main workspace with S3 backend..."
-cd "${TERRAFORM_DIR}"
-terraform init -input=false -reconfigure \
-  -backend-config="bucket=${BUCKET}" \
-  -backend-config="dynamodb_table=${TABLE}" \
-  -backend-config="region=${REGION}"
+# Final message
+echo "Script execution complete!"
 
-echo ""
-echo "Done. Run 'terraform apply' from terraform/ to deploy infrastructure."
-echo ""
-echo "For future checkouts of this repo, run this script again with the same"
-echo "arguments to reconnect to the existing state bucket (no resources will"
-echo "be re-created — bootstrap is idempotent)."

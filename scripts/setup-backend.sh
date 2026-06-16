@@ -18,7 +18,7 @@ TERRAFORM_DIR="${REPO_ROOT}/terraform"
 
 PROJECT_NAME="${1:-mtkc}"
 ENVIRONMENT="${2:-poc}"
-REGION="${3:-ap-southeast-2}"
+REGION="${3:-us-east-1}"
 
 echo "==> Verifying AWS credentials..."
 aws sts get-caller-identity --output text --query 'Account' > /dev/null

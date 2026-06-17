@@ -6,12 +6,12 @@ echo "Starting script execution..."
 # First command - show current working directory
 echo "Start LocalStack:"
 localstack start -d
-sleep 4  # Pause for 3 seconds
+sleep 5  # Pause for 5 seconds
 
 # Second command - show current directory contents
 echo "Create S3 bucket for store Terraform state"
 aws --endpoint-url http://localhost:4566 --region us-east-1 s3 mb s3://tf-test-state
-sleep 3  # Pause for 2 seconds
+sleep 3  # Pause for 3 seconds
 
 
 # Third command - display system information

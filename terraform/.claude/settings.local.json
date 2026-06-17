@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(git *)",
-      "Bash(chmod +x *)"
+      "Bash(chmod +x *)",
+      "Bash(terraform validate *)",
+      "Bash(terraform init *)"
     ]
   }
 }

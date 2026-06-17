@@ -5,30 +5,28 @@
 #
 # Remote state setup (run once before terraform apply):
 #   ./scripts/setup-backend.sh [project_name] [environment] [region]
-# The script creates the S3 bucket + DynamoDB lock table and re-initialises
-# the workspace.  Pass the same project_name/environment/region values you
-# set below so the bucket name is consistent.
-
-# AWS Region
-region = "ap-southeast-2"
 
 # Project Settings
 environment  = "poc"
 project_name = "mtkc"
 
-# Network
-vpc_cidr           = "10.0.0.0/16"
+# Cluster Regions
+cluster_a_region = "us-east-1"
+cluster_b_region = "us-west-1"
+
+# Network — CIDRs must not overlap
+cluster_a_vpc_cidr = "10.0.0.0/16"
+cluster_b_vpc_cidr = "10.1.0.0/16"
+
 az_count           = 2
 enable_nat_gateway = true
 
-# EKS Configuration
+# EKS Configuration (applied to both clusters)
 kubernetes_version     = "1.35"
 eks_node_count         = 2
 eks_node_instance_type = "t3.medium"
 
-# User Node Pool - Separate node pool for application workloads
-# System nodes run: kube-system pods, ArgoCD, Istio control plane
-# User nodes run: Application pods (app1, app2, etc.)
+# User Node Pool
 enable_user_node_pool   = true
 user_node_count         = 2
 user_node_instance_type = "t3.medium"
@@ -49,14 +47,17 @@ argocd_service_type = "LoadBalancer"
 
 # TLS Configuration
 enable_https          = true
-acm_certificate_arn   = ""  # Required for HTTPS - create ACM cert first
 backend_https_enabled = true
 
-# API Gateway Configuration (optional)
-enable_api_gateway         = false  # Set to true to enable API Gateway
-api_gateway_custom_domain  = ""     # Optional custom domain
-api_gateway_certificate_arn = ""    # ACM cert ARN for custom domain
-enable_api_gateway_logging = true
+# ACM certificate ARNs — each cluster needs a cert in its own region
+cluster_a_acm_certificate_arn = ""  # us-east-1 ACM cert ARN
+cluster_b_acm_certificate_arn = ""  # us-west-1 ACM cert ARN
+
+# API Gateway Configuration (cluster-a only, optional)
+enable_api_gateway          = false
+api_gateway_custom_domain   = ""
+api_gateway_certificate_arn = ""
+enable_api_gateway_logging  = true
 
 # Tags
 tags = {

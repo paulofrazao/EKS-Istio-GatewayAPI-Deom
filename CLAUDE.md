@@ -30,25 +30,25 @@ This is a Proof-of-Concept demonstrating Kubernetes Gateway API on AWS EKS with 
 ```bash
 # Required tools: terraform >= 1.0, kubectl, helm 3, jq, dig, aws-cli, curl
 aws sts get-caller-identity   # verify AWS credentials
+# Ensure credentials have access to both us-east-1 (cluster-a) and us-west-1 (cluster-b)
 ```
 
 ### Full Deployment Sequence
 
 ```bash
 # 1. Bootstrap S3 remote state backend (run once per environment)
-# Creates the S3 bucket + DynamoDB lock table, then re-inits the workspace.
-./scripts/setup-backend.sh   # defaults: project=mtkc, env=poc, region=ap-southeast-2
-# Pass explicit values if your terraform.tfvars differs:
-# ./scripts/setup-backend.sh <project_name> <environment> <region>
+./scripts/setup-backend.sh   # defaults: project=mtkc, env=poc, region=us-east-1
 
-# 2. Provision infrastructure
+# 2. Provision infrastructure (deploys both clusters in parallel)
 cd terraform
 cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars — set acm_certificate_arn (required for HTTPS)
+# Edit terraform.tfvars — set cluster_a_acm_certificate_arn (us-east-1) and
+#                          cluster_b_acm_certificate_arn (us-west-1) for HTTPS
 terraform apply
 
-# 3. Configure kubectl
-$(terraform output -raw eks_get_credentials_command)
+# 3. Configure kubectl for each cluster
+$(terraform output -raw cluster_a_get_credentials)
+$(terraform output -raw cluster_b_get_credentials)
 
 # 4. Generate self-signed backend TLS certs
 ./scripts/01-generate-certs.sh           # outputs to certs/ (gitignored)
@@ -69,10 +69,10 @@ kubectl get applications -n argocd -w    # wait for all apps to sync
 
 # 8. Validate
 ./scripts/04-validate.sh
-ALB_DNS=$(terraform -chdir=terraform output -raw alb_dns_name)
-curl -k https://${ALB_DNS}/healthz/ready
-curl -k https://${ALB_DNS}/app1
-curl -k https://${ALB_DNS}/app2
+ALB_A=$(terraform -chdir=terraform output -raw cluster_a_alb_dns_name)
+ALB_B=$(terraform -chdir=terraform output -raw cluster_b_alb_dns_name)
+curl -k https://${ALB_A}/healthz/ready   # cluster-a
+curl -k https://${ALB_B}/healthz/ready   # cluster-b
 ```
 
 ### Individual Script Usage
@@ -90,8 +90,13 @@ curl -k https://${ALB_DNS}/app2
 ### ArgoCD Access
 
 ```bash
+# cluster-a (switch context first)
 kubectl port-forward svc/argocd-server -n argocd 8080:443
-# https://localhost:8080 | admin / $(terraform output -raw argocd_admin_password)
+# https://localhost:8080 | admin / $(terraform output -raw cluster_a_argocd_password)
+
+# cluster-b (switch context first)
+kubectl port-forward svc/argocd-server -n argocd 8081:443
+# https://localhost:8081 | admin / $(terraform output -raw cluster_b_argocd_password)
 ```
 
 ### Teardown
@@ -105,8 +110,10 @@ cd terraform && terraform destroy
 ## Key Configuration
 
 **terraform.tfvars required fields:**
-- `acm_certificate_arn` — AWS Certificate Manager ARN for ALB HTTPS listener (no default)
-- `region` — default `ap-southeast-2`
+- `cluster_a_acm_certificate_arn` — ACM cert ARN for cluster-a ALB (us-east-1, required for HTTPS)
+- `cluster_b_acm_certificate_arn` — ACM cert ARN for cluster-b ALB (us-west-1, required for HTTPS)
+- `cluster_a_region` — default `us-east-1`
+- `cluster_b_region` — default `us-west-1`
 - `project_name` — default `mtkc`
 
 **Namespaces with Ambient mesh label** (`istio.io/dataplane-mode: ambient`):

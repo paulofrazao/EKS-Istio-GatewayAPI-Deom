@@ -4,11 +4,16 @@
 #   tflocal init
 #   tflocal apply -var-file=terraform.tfvars.localstack
 
-region       = "us-east-1"
 environment  = "local"
 project_name = "mtkc"
 
-vpc_cidr           = "10.0.0.0/16"
+# LocalStack: both clusters use us-east-1 (region is mocked)
+cluster_a_region = "us-east-1"
+cluster_b_region = "us-east-1"
+
+cluster_a_vpc_cidr = "10.0.0.0/16"
+cluster_b_vpc_cidr = "10.1.0.0/16"
+
 az_count           = 2
 enable_nat_gateway = false
 
@@ -37,11 +42,10 @@ argocd_service_type = "ClusterIP"
 create_alb = false
 
 # HTTP-only — no ACM cert required for local dev
-# The ALB HTTP listener forwards directly to the Istio Gateway (port 80)
-# HTTPS listener on the Gateway still works if you run 01-generate-certs.sh and create the secret
-enable_https          = false
-acm_certificate_arn   = ""
-backend_https_enabled = false
+enable_https                  = false
+cluster_a_acm_certificate_arn = ""
+cluster_b_acm_certificate_arn = ""
+backend_https_enabled         = false
 
 enable_api_gateway          = false
 api_gateway_custom_domain   = ""

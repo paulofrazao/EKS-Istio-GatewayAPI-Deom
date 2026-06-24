@@ -1,5 +1,4 @@
 # MTKC POC EKS - Main Terraform Configuration
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # Architecture Layers:
 # ===================

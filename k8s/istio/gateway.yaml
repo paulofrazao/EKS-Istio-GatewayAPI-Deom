@@ -1,5 +1,4 @@
 # MTKC POC EKS - Kubernetes Gateway API - Gateway Resource
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 # This creates the Istio ingress gateway with an INTERNAL NLB
 # Traffic flow: Internet → ALB (TLS termination) → Internal NLB → Istio Gateway
 #

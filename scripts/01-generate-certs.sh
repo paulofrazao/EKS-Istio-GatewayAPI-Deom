@@ -1,6 +1,5 @@
 #!/bin/bash
 # MTKC POC EKS - Generate TLS Certificates for End-to-End TLS
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # This script generates self-signed TLS certificates for the Istio Gateway backend.
 #

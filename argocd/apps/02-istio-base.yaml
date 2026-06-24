@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD App: Istio Base CRDs
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # LAYER 3: EKS Customizations (ArgoCD)
 # Sync Wave: -1 (before everything - installs CRDs)

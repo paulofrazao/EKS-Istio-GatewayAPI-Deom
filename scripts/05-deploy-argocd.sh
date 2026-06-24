@@ -1,6 +1,5 @@
 #!/bin/bash
 # MTKC POC EKS - Deploy ArgoCD
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # This script installs ArgoCD using Helm
 

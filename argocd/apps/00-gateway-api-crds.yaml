@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD App: Gateway API CRDs
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # LAYER 3: EKS Customizations (ArgoCD)
 # Sync Wave: -2 (before Istio base CRDs)

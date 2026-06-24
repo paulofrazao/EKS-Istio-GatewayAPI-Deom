@@ -1,5 +1,4 @@
 # MTKC POC EKS - Sample Application 1 Service
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 
 ---
 apiVersion: v1

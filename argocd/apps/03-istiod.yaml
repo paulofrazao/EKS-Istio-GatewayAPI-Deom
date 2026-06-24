@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD App: Istiod (Control Plane)
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 # Sync Wave: 0 (after CRDs)
 
 apiVersion: argoproj.io/v1alpha1

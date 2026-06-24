@@ -1,5 +1,4 @@
 # MTKC POC EKS - Terraform Outputs
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 
 # ==============================================================================
 # CLUSTER-A (us-east-1)

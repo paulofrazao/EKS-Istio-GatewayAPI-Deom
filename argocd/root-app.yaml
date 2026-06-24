@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD Root Application (App of Apps Pattern)
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # This is the root application that manages all child applications
 # Deploy this after Terraform has created the cluster and ArgoCD:
@@ -27,7 +26,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/shanaka-versent/EKS-Istio-GatewayAPI-Deom.git
+    repoURL: https://github.com/paulofrazao/EKS-Istio-GatewayAPI-Deom.git
     targetRevision: HEAD
     path: argocd/apps
 

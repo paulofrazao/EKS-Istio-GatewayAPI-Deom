@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD App: HTTPRoutes
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # LAYER 3: EKS Customizations (ArgoCD)
 # Sync Wave: 6 (after gateway)
@@ -17,7 +16,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/shanaka-versent/EKS-Istio-GatewayAPI-Deom.git
+    repoURL: https://github.com/paulofrazao/EKS-Istio-GatewayAPI-Deom.git
     targetRevision: HEAD
     path: k8s/istio
     directory:

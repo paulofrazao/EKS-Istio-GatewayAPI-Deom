@@ -1,7 +1,5 @@
 # POC - AWS EKS with Kubernetes Gateway API & Istio Ambient
 
-**Author:** Shanaka Jayasundera - shanakaj@gmail.com
-
 This POC demonstrates how to implement Kubernetes Gateway API on AWS EKS with Istio Ambient Mesh, exposed via AWS Application Load Balancer (ALB).
 
 In the real world, you don't always get a greenfield opportunity to design the cleanest architecture. More often, you need to retrofit the best possible solution to existing standards and platforms. This project examines exactly that situation—where Kubernetes-hosted workloads need to be exposed via an existing platform with Load Balancers and WAF (or a WAF sandwich architecture).

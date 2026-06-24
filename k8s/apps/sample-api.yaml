@@ -1,5 +1,4 @@
 # MTKC POC EKS - Sample REST API Service
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # This is the backend API service accessed via AWS API Gateway
 # API Gateway handles versioning (/api/v1/users, /api/v2/users) and rewrites to /api/users

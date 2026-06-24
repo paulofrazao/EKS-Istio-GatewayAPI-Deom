@@ -1,6 +1,5 @@
 #!/bin/bash
 # MTKC POC EKS - Validate Deployment
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # This script validates the entire deployment
 

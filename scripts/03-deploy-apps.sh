@@ -1,6 +1,5 @@
 #!/bin/bash
 # MTKC POC EKS - Deploy Sample Applications
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # Prerequisites:
 # - EKS cluster created

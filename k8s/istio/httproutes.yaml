@@ -1,5 +1,4 @@
 # MTKC POC EKS - HTTPRoutes for Kubernetes Gateway API
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 # These route traffic from the Gateway to backend services
 #
 # IMPORTANT: This uses HTTPRoute (Gateway API), NOT Ingress resources

@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD App: Istio CNI (for Ambient Mesh)
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 # Sync Wave: 0 (with istiod)
 
 apiVersion: argoproj.io/v1alpha1

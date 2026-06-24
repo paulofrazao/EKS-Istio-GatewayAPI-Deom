@@ -1,5 +1,4 @@
 # MTKC POC EKS - ArgoCD App: ztunnel (Ambient Mesh L4 mTLS)
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 # Sync Wave: 0 (with istiod and cni)
 
 apiVersion: argoproj.io/v1alpha1

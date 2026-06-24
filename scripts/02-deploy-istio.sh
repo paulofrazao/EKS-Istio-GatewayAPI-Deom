@@ -1,6 +1,5 @@
 #!/bin/bash
 # MTKC POC EKS - Deploy Istio Ambient Mesh and AWS Load Balancer Controller
-# @author Shanaka Jayasundera - shanakaj@gmail.com
 #
 # Prerequisites:
 # - EKS cluster created via Terraform
